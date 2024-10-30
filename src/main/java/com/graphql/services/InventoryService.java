@@ -74,4 +74,51 @@ public class InventoryService implements IInventoryService {
 		}
 	}
 
+	
+	@Override
+	public void craeteProduct(Product product) {
+		String createProductMutation = String.format("mutation CreateProduct {\r\n"
+	            + "    createProduct(productDTO: {name: \"%s\", category: \"%s\", price: %.2f, stock: %d}) {\r\n"
+	            + "        id\r\n"
+	            + "        name\r\n"
+	            + "    }\r\n"
+	            + "}", product.name(), product.category(), product.price(), product.stock());
+
+		try {
+			Product response = graphQlClient.document(createProductMutation).retrieve("createProduct").toEntity(Product.class)
+			.block();
+			
+			 System.out.println("Product created successfully: " + response.name());
+	    } catch (Exception e) {
+	        System.out.println("Error occurred while creating product: " + e.getMessage());
+	    }
+	}
+
+	@Override
+	public Product updateProduct(Product product, Integer id) {
+	    String updateProductQuery = String.format("mutation UpdateProduct {\r\n"
+	            + "    updateProduct(id: %d, productDTO: { price: %f, stock: %d }) {\r\n"
+	            + "        price\r\n"
+	            + "        stock\r\n"
+	            + "        id\r\n"
+	            + "        category\r\n"
+	            + "        name\r\n"
+	            + "    }\r\n"
+	            + "}", id, product.price(), product.stock()); 
+
+	    try {
+	       
+	        Product response = graphQlClient.document(updateProductQuery)
+	                .retrieve("updateProduct")
+	                .toEntity(Product.class)
+	                .block();
+
+	        return response; 
+	    } catch (Exception e) {
+	        
+	        System.out.println("Error occurred while updating product: " + e.getMessage());
+	        return null;
+	    }
+	}
+
 }

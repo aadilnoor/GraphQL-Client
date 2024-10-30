@@ -11,4 +11,8 @@ public interface IInventoryService {
 	List<Product> getAllProductByCategory(String category);
 	
     void deleteProductById(Integer id);
+    
+    void craeteProduct(Product product);
+    
+    Product updateProduct(Product product , Integer id);
 }
